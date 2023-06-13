@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ActRay: Online Active Ray Sampling for Radiance Fields</title>
+  <link rel="icon" href="icons/favicon.ico" type="image/x-icon" sizes="48x48">
+  <meta property="og:url"                content="https://pku-netvideo.github.io/actray" />
+  <meta property="og:type"               content="article" />
+  <meta property="og:title"              content="ActRay: Online Active Ray Sampling for Radiance Fields" />
+  <meta property="og:description"        content="We present ActRay, We propose ActRay, a common sampling strategy that can accelerate the convergence speed of NeRF models." />
+  <meta property="og:image"              content="https://nex-mpi.github.io/imgs/representative_image.jpg" />
+  <meta name="description" content="We present ActRay, We propose ActRay, a common sampling strategy that can accelerate the convergence speed of NeRF models." />
+  <meta name="keywords" content="view Synthesis, NeRF, ActRay, Fast convergence">
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <main class="container">
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
+      <div class="col-md-12 p-lg-5 mx-auto my-2">
+        <h2 class="display-3 fw-bold my-5">ActRay: Online Active Ray Sampling for Radiance Fields</h2>
+
+        <div class="row my-3">
+          <div class="col">
+            <p class="fw-normal mb-3 fs-4">Jiangkai Wu</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div>
+          <div class="col">
+            <p class="fw-normal mb-3 fs-4">Liming Liu</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div><div class="col">
+            <p class="fw-normal mb-3 fs-4">Yunpeng Tan</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="fw-normal mb-3 fs-4">Quanlu Jia</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div>
+          <div class="col">
+            <p class="fw-normal mb-3 fs-4">Haodan Zhang</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div><div class="col">
+            <p class="fw-normal mb-3 fs-4">Xinggong Zhang*</p>
+            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="imgs/representative_image.jpg" />
+    </div>
+
+    <div class="row my-5">
+      <h2>Abstract</h2>
+      <p>
+        Thanks to the high-quality reconstruction and photorealistic rendering,
+        NeRF (Neural Radiance Fields) has attracted extensive attention and achieved
+        continuous improvement. Despite its impressive visual effect, the prohibitive
+        reconstruction time limits its practical application in real life. Although
+        significant acceleration has been achieved, there is still a considerable gap
+        from real-time reconstruction, due to the need for tens of thousands of
+        iterations. In this paper, a feasible solution thus is to reduce the number of
+        required iterations by always training the underfitting rays samples. To this
+        end, we propose an online active ray sampling strategy, ActRay. Since the
+        states of rays are partially observable and outdated, a rendering-gradientbased loss propagation algorithm is presented to fully estimate the ray states.
+        To balance exploration and exploitation, a UCB-based online reinforcement
+        learning algorithm is proposed to adaptively select the most valuable and
+        potential rays. We evaluate ActRay on both real-world and synthetic scenes,
+        and the promising results show that it accelerates radiance fields training
+        to 651% of the original speed. Besides, we test ActRay under all kinds of
+        NeRF representations (implicit, explicit, and hybrid), demonstrating that it
+        is general and effective to different representations. We believe this work
+        will contribute to the practical application of radiance fields, because it has
+        taken a step closer to real-time radiance fields reconstruction.
+      </p>
+    </div>
+
+    <div class="row my-5">
+      <div class="col">
+        <div class="rounded-circle bg-secondary m-auto my-3" style="width:140px; height:140px; overflow: hidden;">
+            <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Paper</span>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button class="btn btn-primary" disabled>Comming Soon &raquo;</button>
+        </div>
+      </div><!-- /.col-lg-4 -->
+      
+      <div class="col">
+        <div class="rounded-circle bg-secondary m-auto my-3" style="width:140px; height:140px; overflow: hidden;">
+            <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Code</span>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button class="btn btn-primary" disabled>Comming Soon &raquo;</button>
+        </div>
+      </div><!-- /.col-lg-4 -->
+    </div>
+
+    <div class="my-5">
+      <h2>Result Videos</h2>
+      <div class="row my-2">
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024019784430.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">lego</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024037307674.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">ship</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024003840341.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">hotdog</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024028381546.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">material</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023951327228.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">ficus</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6 col-lg-4">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023938179159.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">chairs</h4>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="my-5">
+      <h2>Training Time</h2>
+      
+      <div class="my-3">
+        <table class="table table-striped">
+          <tr>
+            <td>Accuracy (PSNR)</td>
+            <td>28</td>
+            <td>30</td>
+            <td>31</td>
+            <td>32</td>
+            <td>33.5</td>
+          </tr>
+          <tr>
+            <td>Plenoxels</td>
+            <td>850</td>
+            <td>2400</td>
+            <td>4600</td>
+            <td>9700</td>
+            <td>15200</td>
+          </tr>
+          <tr>
+            <td>Plenoxels+Ours</td>
+            <td>300</td>
+            <td>450</td>
+            <td>700</td>
+            <td>1700</td>
+            <td>3600</td>
+          </tr>
+          <tr>
+            <td>Acceleration</td>
+            <td>283 %</td>
+            <td>533 %</td>
+            <td><span class="font-weight-bold">651 %</span></td>
+            <td>571 %</td>
+            <td>422 %</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="my-3">
+        <table class="table table-striped">
+          <tr>
+            <td>Accuracy (PSNR)</td>
+            <td>31</td>
+            <td>32</td>
+            <td>33</td>
+            <td>34</td>
+            <td>34.2</td>
+          </tr>
+          <tr>
+            <td>Instant-NGP</td>
+            <td>1136</td>
+            <td>1888</td>
+            <td>3802</td>
+            <td>12368</td>
+            <td>18000</td>
+          </tr>
+          <tr>
+            <td>Instant-NGP+Ours</td>
+            <td>1024</td>
+            <td>1388</td>
+            <td>2307</td>
+            <td>6300</td>
+            <td>8609</td>
+          </tr>
+          <tr>
+            <td>Acceleration</td>
+            <td>111 %</td>
+            <td>135 %</td>
+            <td>167 %</td>
+            <td>196 %</td>
+            <td><span class="font-weight-bold"></span>209 %</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="my-3">
+        <table class="table table-striped">
+          <tr>
+            <td>Accuracy (PSNR)</td>
+            <td>26</td>
+            <td>27</td>
+            <td>28</td>
+            <td>29</td>
+            <td>30</td>
+          </tr>
+          <tr>
+            <td>NeRF</td>
+            <td>9552</td>
+            <td>17641</td>
+            <td>34861</td>
+            <td>76757</td>
+            <td>223974</td>
+          </tr>
+          <tr>
+            <td>NeRF+Ours</td>
+            <td>4620</td>
+            <td>5910</td>
+            <td>11250</td>
+            <td>22310</td>
+            <td>69400</td>
+          </tr>
+          <tr>
+            <td>Acceleration</td>
+            <td>207 %</td>
+            <td>298 %</td>
+            <td>310 %</td>
+            <td><span class="font-weight-bold">344 %</span></td>
+            <td>323 %</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="my-5">
+      <h2>BibTex</h2>
+      <p>comming soon</p>
+    </div>
+
+  </main>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
