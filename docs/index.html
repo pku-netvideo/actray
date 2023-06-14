@@ -10,7 +10,7 @@
   <meta property="og:type"               content="article" />
   <meta property="og:title"              content="ActRay: Online Active Ray Sampling for Radiance Fields" />
   <meta property="og:description"        content="We present ActRay, We propose ActRay, a common sampling strategy that can accelerate the convergence speed of NeRF models." />
-  <meta property="og:image"              content="https://nex-mpi.github.io/imgs/representative_image.jpg" />
+  <meta property="og:image"              content="https://pku-netvideo.github.io/actray/imgs/representative_image.jpg" />
   <meta name="description" content="We present ActRay, We propose ActRay, a common sampling strategy that can accelerate the convergence speed of NeRF models." />
   <meta name="keywords" content="view Synthesis, NeRF, ActRay, Fast convergence">
 
@@ -18,10 +18,10 @@
 </head>
 <body>
 
-  <main class="container">
+  <main class="container" style="max-width: 1000px;">
     <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
-      <div class="col-md-12 p-lg-5 mx-auto my-2">
-        <h2 class="display-3 fw-bold my-5">ActRay: Online Active Ray Sampling for Radiance Fields</h2>
+      <div class="col-md-12 p-lg-5 mx-auto my-1">
+        <h2 class="display-3 fw-bold my-5 fs-1">ActRay: Online Active Ray Sampling for Radiance Fields</h2>
 
         <div class="row my-3">
           <div class="col">
@@ -54,31 +54,18 @@
     </div>
 
     <div class="row">
-      <img src="imgs/representative_image.jpg" />
+      <img class="w-100" src="imgs/representative_image.jpg" />
     </div>
 
     <div class="row my-5">
       <h2>Abstract</h2>
-      <p>
-        Thanks to the high-quality reconstruction and photorealistic rendering,
-        NeRF (Neural Radiance Fields) has attracted extensive attention and achieved
-        continuous improvement. Despite its impressive visual effect, the prohibitive
-        reconstruction time limits its practical application in real life. Although
-        significant acceleration has been achieved, there is still a considerable gap
-        from real-time reconstruction, due to the need for tens of thousands of
-        iterations. In this paper, a feasible solution thus is to reduce the number of
-        required iterations by always training the underfitting rays samples. To this
-        end, we propose an online active ray sampling strategy, ActRay. Since the
-        states of rays are partially observable and outdated, a rendering-gradientbased loss propagation algorithm is presented to fully estimate the ray states.
-        To balance exploration and exploitation, a UCB-based online reinforcement
-        learning algorithm is proposed to adaptively select the most valuable and
-        potential rays. We evaluate ActRay on both real-world and synthetic scenes,
-        and the promising results show that it accelerates radiance fields training
-        to 651% of the original speed. Besides, we test ActRay under all kinds of
-        NeRF representations (implicit, explicit, and hybrid), demonstrating that it
-        is general and effective to different representations. We believe this work
-        will contribute to the practical application of radiance fields, because it has
-        taken a step closer to real-time radiance fields reconstruction.
+      <p style="text-align: justify;">
+        Thanks to the high-quality reconstruction and photorealistic rendering, NeRF (Neural Radiance Fields) has attracted extensive attention and achieved continuous improvement. Despite its impressive visual effect, the prohibitive reconstruction time limits its practical application in real life. 
+        Although significant acceleration has been achieved, there is still a considerable gap from real-time reconstruction, due to the need for tens of thousands of iterations. 
+        In this paper, a feasible solution thus is to reduce the number of required iterations by always training the underfitting rays samples. To this end, we propose an online active ray sampling strategy, ActRay. 
+        Since the states of rays are partially observable and outdated, a rendering-gradient-based loss propagation algorithm is presented to fully estimate the ray states. To balance exploration and exploitation, a UCB-based online reinforcement learning algorithm is proposed to adaptively select the most valuable and potential rays. 
+        We evaluate ActRay on both real-world and synthetic scenes, and the promising results show that it accelerates radiance fields training to 651% of the original speed. Besides, we test ActRay under all kinds of NeRF representations (implicit, explicit, and hybrid), demonstrating that it is general and effective to different representations. 
+        We believe this work will contribute to the practical application of radiance fields, because it has taken a step closer to real-time radiance fields reconstruction.
       </p>
     </div>
 
@@ -105,37 +92,37 @@
     <div class="my-5">
       <h2>Result Videos</h2>
       <div class="row my-2">
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024019784430.mp4" type="video/mp4" />
           </video>
           <h4 class="w-100 m-auto text-center">lego</h4>
         </div>
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024037307674.mp4" type="video/mp4" />
           </video>
           <h4 class="w-100 m-auto text-center">ship</h4>
         </div>
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024003840341.mp4" type="video/mp4" />
           </video>
           <h4 class="w-100 m-auto text-center">hotdog</h4>
         </div>
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024028381546.mp4" type="video/mp4" />
           </video>
           <h4 class="w-100 m-auto text-center">material</h4>
         </div>
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023951327228.mp4" type="video/mp4" />
           </video>
           <h4 class="w-100 m-auto text-center">ficus</h4>
         </div>
-        <div class="my-2 col-12 col-md-6 col-lg-4">
+        <div class="my-2 col-12 col-md-6">
           <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
             <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023938179159.mp4" type="video/mp4" />
           </video>
@@ -146,7 +133,7 @@
     </div>
 
     <div class="my-5">
-      <h2>Training Time</h2>
+      <h2>Training Time (Iters) </h2>
       
       <div class="my-3">
         <table class="table table-striped">
