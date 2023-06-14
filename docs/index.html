@@ -136,114 +136,117 @@
       <h2>Training Time (Iters) </h2>
       
       <div class="my-3">
-        <table class="table table-striped">
-          <tr>
-            <td>Accuracy (PSNR)</td>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
             <td>28</td>
             <td>30</td>
             <td>31</td>
             <td>32</td>
             <td>33.5</td>
           </tr>
-          <tr>
-            <td>Plenoxels</td>
+          <tr class="table-secondary">
+            <td>Baseline</td>
             <td>850</td>
             <td>2400</td>
             <td>4600</td>
             <td>9700</td>
             <td>15200</td>
           </tr>
-          <tr>
-            <td>Plenoxels+Ours</td>
+          <tr class="table-secondary">
+            <td>Ours</td>
             <td>300</td>
             <td>450</td>
             <td>700</td>
             <td>1700</td>
             <td>3600</td>
           </tr>
-          <tr>
+          <tr class="table-info">
             <td>Acceleration</td>
             <td>283 %</td>
             <td>533 %</td>
-            <td><span class="font-weight-bold">651 %</span></td>
+            <td class="table-success"><span class="font-weight-bold">651 %</span></td>
             <td>571 %</td>
             <td>422 %</td>
           </tr>
         </table>
+        <p class="w-100 font-weight-bold m-auto text-center">Plenoxels</p>
       </div>
 
       <div class="my-3">
-        <table class="table table-striped">
-          <tr>
-            <td>Accuracy (PSNR)</td>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
             <td>31</td>
             <td>32</td>
             <td>33</td>
             <td>34</td>
             <td>34.2</td>
           </tr>
-          <tr>
-            <td>Instant-NGP</td>
+          <tr class="table-secondary">
+            <td>Baseline</td>
             <td>1136</td>
             <td>1888</td>
             <td>3802</td>
             <td>12368</td>
             <td>18000</td>
           </tr>
-          <tr>
-            <td>Instant-NGP+Ours</td>
+          <tr class="table-secondary">
+            <td>Ours</td>
             <td>1024</td>
             <td>1388</td>
             <td>2307</td>
             <td>6300</td>
             <td>8609</td>
           </tr>
-          <tr>
+          <tr class="table-info">
             <td>Acceleration</td>
             <td>111 %</td>
             <td>135 %</td>
             <td>167 %</td>
             <td>196 %</td>
-            <td><span class="font-weight-bold"></span>209 %</span></td>
+            <td class="table-success"><span class="font-weight-bold"></span>209 %</span></td>
           </tr>
         </table>
+        <p class="w-100 font-weight-bold m-auto text-center">Instant-NGP</p>
       </div>
 
       <div class="my-3">
-        <table class="table table-striped">
-          <tr>
-            <td>Accuracy (PSNR)</td>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
             <td>26</td>
             <td>27</td>
             <td>28</td>
             <td>29</td>
             <td>30</td>
           </tr>
-          <tr>
-            <td>NeRF</td>
+          <tr class="table-secondary">
+            <td>Baseline</td>
             <td>9552</td>
             <td>17641</td>
             <td>34861</td>
             <td>76757</td>
             <td>223974</td>
           </tr>
-          <tr>
-            <td>NeRF+Ours</td>
+          <tr class="table-secondary">
+            <td>Ours</td>
             <td>4620</td>
             <td>5910</td>
             <td>11250</td>
             <td>22310</td>
             <td>69400</td>
           </tr>
-          <tr>
+          <tr class="table-info">
             <td>Acceleration</td>
             <td>207 %</td>
             <td>298 %</td>
             <td>310 %</td>
-            <td><span class="font-weight-bold">344 %</span></td>
+            <td class="table-success"><span class="font-weight-bold">344 %</span></td>
             <td>323 %</td>
           </tr>
         </table>
+        <p class="w-100 font-weight-bold m-auto text-center">NeRF</p>
       </div>
 
     </div>
