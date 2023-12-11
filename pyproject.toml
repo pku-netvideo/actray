@@ -1,0 +1,15 @@
+[project]
+name = "method-actray"
+description = "A implementation and integration of ActRay into nerfstudio."
+version = "0.1.0"
+
+dependencies = ["nerfstudio >= 0.3.0"] 
+
+[tool.setuptools.packages.find]
+include = ["method_actray*"]
+
+# register the entry point of your new method here:
+[project.entry-points.'nerfstudio.method_configs']
+method-actray-instant-ngp = 'method_actray.actray_config:method_actray_instant_ngp'
+method-actray-instant-ngp-bounded = 'method_actray.actray_config:method_actray_instant_ngp_bounded'
+method-actray-nerfacto = 'method_actray.actray_config:method_actray_nerfacto'
