@@ -9,7 +9,7 @@ How can we further accelerate the trainig process of NeRF? Is there any alogrith
 *Peking Universiy*  
 SIGGRAPH Asia 2023 Conference Papers
 
-<font size=5>[Project](https://pku-netvideo.github.io/actray) | [Paper]()</font>
+<font size=5>[Project](https://pku-netvideo.github.io/actray) | [Paper](https://dl.acm.org/doi/10.1145/3610548.3618254)</font>
 
 In order to reveal the universality, we implement our algorithm on [nerfstudio](https://docs.nerf.studio/), the most famous open-source platform for NeRF now. Our algorithm can actually accelerate *nerfacto* in nerfstudio up to more than 3 times on lego scene:
 
@@ -89,6 +89,14 @@ Our project is currently implemented on [nerfstudio](https://docs.nerf.studio/qu
 
 # Citation
 
-    @article{
-        
+    @inproceedings{10.1145/3610548.3618254,
+        author = {Wu, Jiangkai and Liu, Liming and Tan, Yunpeng and Jia, Quanlu and Zhang, Haodan and Zhang, Xinggong},
+        title = {ActRay: Online Active Ray Sampling for Radiance Fields},
+        year = {2023},
+        booktitle = {SIGGRAPH Asia 2023 Conference Papers},
+        articleno = {97},
+        numpages = {10},
+        location = {Sydney, NSW, Australia},
+        series = {SA '23}
     }
+
