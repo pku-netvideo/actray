@@ -45,14 +45,13 @@ def multinomial_large_scale(sampling_prob, sampling_num):
 
 @dataclass
 class ActivePixelSamplerConfig(PixelSamplerConfig):
-    """Configuration for pixel sampler instantiation."""
+    """Configuration for active pixel sampler instantiation."""
 
     _target: Type = field(default_factory=lambda: ActivePixelSampler)
     actray_start_iter: int = 300
+    """when to start the ActRay sampling strategy"""
     prefetch_scale: int = 5
-
-    # Debug
-    use_true_loss: bool = True
+    """an acceleration strategy: in one batch prefetch the rays used in the several following batches (prefetch_scale gives the number)."""
 
 class ActivePixelSampler(PixelSampler):
     
@@ -91,12 +90,10 @@ class ActivePixelSampler(PixelSampler):
         
         self.indices_buffer = torch.empty((1)).to(device = device)
         self.indices_buffer_size = 0
-
-        self.count_image = torch.zeros(img_shape).to(device = device)
         
         super().__init__(config, **kwargs)
     
-    def calc_probability(self, img_idx: Tensor, batch_size: int, importance_ratio: float = 0.7):
+    def calc_probability(self, img_idx: Tensor, batch_size: int, importance_ratio: float = 0.5):
         outdate_image = self.outdate_total + self.outdate_offset_image[img_idx, ...].view(-1)
         UCB_image = self.UCB_image[img_idx, ...].view(-1)
 
@@ -112,7 +109,7 @@ class ActivePixelSampler(PixelSampler):
 
         UCB = UCB_image * torch.exp(outdate_image)
         assert UCB.max() != torch.nan and UCB.max() != torch.inf
-        
+
         return UCB
 
 
@@ -122,17 +119,15 @@ class ActivePixelSampler(PixelSampler):
             img_idx: Tensor,
             step: int,
     ) -> Int[Tensor, "batch_size 3"]:
-        """
-        Pixel Sampler using ActRay.
-        It samples pixels according to possibilities.
+        """Pixel Sampler using ActRay. It samples pixels according to possibilities calculated with loss values.
         
         Args:
-            batch_size:                         number of rays in a batch
-            img_idx:                            indices of images being sampled in this batch
-            step:                               iteration index
+            batch_size:         number of rays in a batch
+            img_idx:            indices of images being sampled in this batch
+            step:               iteration index
         """
         with torch.no_grad():
-            if self.config.actray_start_iter > 0 and step > self.config.actray_start_iter:
+            if self.config.actray_start_iter >= 0 and step > self.config.actray_start_iter:
                 fetch_len = min(self.indices_buffer_size, batch_size)
                 indices_part1 = self.indices_buffer[self.indices_buffer_size - fetch_len : self.indices_buffer_size]
                 self.indices_buffer_size -= fetch_len
@@ -156,20 +151,9 @@ class ActivePixelSampler(PixelSampler):
             else:
                 return super().sample_method(batch_size, self.img_shape[0], self.img_shape[1], self.img_shape[2], device = 'cpu').to(self.device)
     
+
     def collate_image_dataset_batch(self, batch: Dict, num_rays_per_batch: int, step: int, keep_full_image: bool = False):
-        """
-        Operates on a batch of images and samples pixels to use for generating rays.
-        Returns a collated batch which is input to the Graph.
-        It will sample only within the valid 'mask' if it's specified.
-
-        Args:
-            batch:                          batch of images to sample from
-            num_rays_per_batch:             number of rays to sample per batch
-            step:                           iteration index
-            keep_full_image:                whether or not to include a reference to the full image in returned batch
-        """
-        device = batch["image"].device
-
+        """The same as PixelSampler.collate_image_dataset_batch"""
         indices = self.sample_method(num_rays_per_batch, batch["image_idx"], step)
 
         c, y, x = (i.flatten() for i in torch.split(indices, 1, dim=-1))
@@ -181,20 +165,16 @@ class ActivePixelSampler(PixelSampler):
         assert collated_batch["image"].shape[0] == num_rays_per_batch
 
         indices[:, 0] = batch["image_idx"][c]
-        collated_batch["indices"] = indices  # with the abs camera indices
+        collated_batch["indices"] = indices
 
         if keep_full_image:
             collated_batch["full_image"] = batch["image"]
 
         return collated_batch
+    
 
     def sample(self, image_batch: Dict, step: int):
-        """Sample an image batch and return a pixel batch.
-
-        Args:
-            image_batch:        batch of images to sample from
-            step:               iteration index
-        """
+        """The same as PixelSampler.sample"""
         if isinstance(image_batch["image"], torch.Tensor):
             pixel_batch = self.collate_image_dataset_batch(
                 image_batch, self.num_rays_per_batch, step, keep_full_image=self.config.keep_full_image

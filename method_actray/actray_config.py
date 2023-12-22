@@ -26,19 +26,20 @@ from method_actray.actray_vanilla_pipeline import ActRayVanillaPipelineConfig
 
 method_actray_instant_ngp = MethodSpecification(
     config=TrainerConfig(
-        method_name="method-actray-instant-ngp",  # TODO: rename to your own model
+        method_name="method-actray-instant-ngp",
         steps_per_eval_batch=500,
         steps_per_save=2000,
         max_num_iterations=30000,
         mixed_precision=True,
         pipeline=ActRayDynamicBatchPipelineConfig(
-            propogation_reduce_to=-1,
+            propagation_reduce_to=-1,
             stop_exploration_thresh=3.5,
+            use_random_background_color=True,
             datamanager=ActRayDataManagerConfig(
                 dataparser=NerfstudioDataParserConfig(),
                 train_num_rays_per_batch=4096,
                 eval_num_rays_per_batch=4096,
-                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=150)
+                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=300)
             ),
             model=InstantNGPModelConfig(eval_num_rays_per_chunk=8192),
         ),
@@ -57,19 +58,19 @@ method_actray_instant_ngp = MethodSpecification(
 
 method_actray_instant_ngp_bounded = MethodSpecification(
     config=TrainerConfig(
-        method_name="method-actray-instant-ngp-bounded",  # TODO: rename to your own model
+        method_name="method-actray-instant-ngp-bounded",
         steps_per_eval_batch=500,
         steps_per_save=2000,
         max_num_iterations=30000,
         mixed_precision=True,
         pipeline=ActRayDynamicBatchPipelineConfig(
-            propogation_reduce_to=5000,
+            propagation_reduce_to=5000,
             stop_exploration_thresh=3.5,
+            use_random_background_color=True,
             datamanager=ActRayDataManagerConfig(
                 dataparser=BlenderDataParserConfig(),
                 train_num_rays_per_batch=8192,
-                # train_pixel_sampler_config=PixelSamplerConfig()
-                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=150)
+                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=300)
             ),
             model=InstantNGPModelConfig(
                 eval_num_rays_per_chunk=8192,
@@ -96,14 +97,15 @@ method_actray_instant_ngp_bounded = MethodSpecification(
 
 method_actray_nerfacto = MethodSpecification(
     config=TrainerConfig(
-        method_name="method-actray-nerfacto",  # TODO: rename to your own model
+        method_name="method-actray-nerfacto",
         steps_per_eval_batch=500,
         steps_per_save=2000,
         max_num_iterations=30000,
         mixed_precision=True,
         pipeline=ActRayVanillaPipelineConfig(
-            propogation_reduce_to=-1,
+            propagation_reduce_to=-1,
             stop_exploration_thresh=3.5,
+            use_random_background_color=True,
             datamanager=ActRayDataManagerConfig(
                 dataparser=NerfstudioDataParserConfig(),
                 train_num_rays_per_batch=4096,
@@ -113,7 +115,7 @@ method_actray_nerfacto = MethodSpecification(
                     optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2),
                     scheduler=ExponentialDecaySchedulerConfig(lr_final=6e-6, max_steps=200000),
                 ),
-                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=150)
+                train_pixel_sampler_config=ActivePixelSamplerConfig(prefetch_scale=5, actray_start_iter=300)
             ),
             model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
         ),

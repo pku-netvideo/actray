@@ -71,21 +71,20 @@ TDataset = TypeVar("TDataset", bound=InputDataset, default=InputDataset)
 
 @dataclass
 class ActRayDataManagerConfig(VanillaDataManagerConfig):
-    """Template DataManager Config
-
-    Add your custom datamanager config parameters here.
-    """
+    """ActRayDataManager Config"""
 
     _target: Type = field(default_factory=lambda: ActRayDataManager)
     train_pixel_sampler_config: ActivePixelSamplerConfig = ActivePixelSamplerConfig()
+    """the configuration of train_pixel_sampler. default to the active sampler"""
     eval_pixel_sampler_config: PixelSamplerConfig = PixelSamplerConfig()
+    """the configuration of eval_pixel_sampler. default to the random sampler"""
 
 
 class ActRayDataManager(VanillaDataManager):
-    """Template DataManager
+    """ActRayDataManager which uses ActivePixelSampler as its train_pixel_sampler
 
     Args:
-        config: the DataManagerConfig used to instantiate class
+        train_pixel_sampler & eval_pixel_sampler: instantiated from their seperate configurations
     """
 
     config: ActRayDataManagerConfig
@@ -122,7 +121,7 @@ class ActRayDataManager(VanillaDataManager):
             return pixel_sampler.setup(
                 is_equirectangular = is_equirectangular, 
                 num_rays_per_batch = num_rays_per_batch,
-                img_shape = [dataset.__len__(), dataset.cameras.height[0, 0].item(), dataset.cameras.width[0, 0].item()], # 假设所有的图片的分辨率相同
+                img_shape = [dataset.__len__(), dataset.cameras.height[0, 0].item(), dataset.cameras.width[0, 0].item()],
                 device = self.device
             )
         if self.config.patch_size > 1 and type(pixel_sampler) is PixelSamplerConfig:
@@ -134,22 +133,15 @@ class ActRayDataManager(VanillaDataManager):
         return pixel_sampler.setup(
             is_equirectangular=is_equirectangular, num_rays_per_batch=num_rays_per_batch
         )
-    
-    def setup_eval(self):
-        """Sets up the data loader for evaluation"""
-        super().setup_eval()
-        self.fixed_indices_train_dataloader = FixedIndicesEvalDataloader(
-            input_dataset=self.train_dataset,
-            device=self.device,
-            num_workers=self.world_size * 4,
-        )
 
     def next_train(self, step: int) -> Tuple[RayBundle, Dict]:
         """Returns the next batch of data from the train dataloader."""
         self.train_count += 1
+        # select images to sample from
         image_batch = next(self.iter_train_image_dataloader)
         assert self.train_pixel_sampler is not None
         assert isinstance(image_batch, dict)
+        # select pixels in these images
         batch = self.train_pixel_sampler.sample(image_batch, step)
         ray_indices = batch["indices"]
         ray_bundle = self.train_ray_generator(ray_indices)
