@@ -13,7 +13,7 @@ SIGGRAPH Asia 2023 Conference Papers
 
 In order to reveal the universality, we implement our algorithm on [nerfstudio](https://docs.nerf.studio/), the most famous open-source platform for NeRF now. Our algorithm can actually accelerate *nerfacto* in nerfstudio up to more than 3 times on lego scene:
 
-![](imgs/lego_nerfacto.jpg)
+![](imgs/lego_nerfacto_random_bg.jpg)
 
 # Installation
 
