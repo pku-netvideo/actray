@@ -2,3 +2,6 @@ outputs
 **/*.egg-info
 **/__pycache__
 exp.sh
+
+.vscode
+.DS_Store
