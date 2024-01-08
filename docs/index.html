@@ -15,76 +15,647 @@
   <meta name="description" content="A general ray sampling strategy that can accelerate the convergence speed of NeRF models." />
   <meta name="keywords" content="view Synthesis, NeRF, ActRay, Fast training, active learning">
 
-  <link href="css/bulma.min.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/custom.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="scripts/bulma.min.css">
+  <link rel="stylesheet" href="scripts/splide.min.css">
+
+  <style>
+    .black-frame {
+      height: 100%;
+      background: #171617;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splide__pagination__page.is-active {
+      background: #555555;
+    }
+
+    .card {
+      margin: 10px;
+    }
+
+    .card .media-content .title,
+    .card .media-content .subtitle {
+      color: #4a4a4a;
+    }
+
+    .subtitle {
+      margin-top: -0.8rem !important;
+    }
+
+    .card-footer {
+      text-align: center;
+    }
+
+    .author {
+      font-size: 1.15rem
+    }
+
+    .author-vistec {
+      font-size: 1.3rem;
+    }
+
+    .conference-name{
+      font-size:  1.5rem;
+      padding: 12px;
+    }
+    .slider-container{
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+    @media only screen and (min-width: 900px) {
+      .container.col-max-width {
+        max-width: 900px !important;
+      }      
+    }
+
+    @media only screen and (min-width: 681px) {
+      .vistec-offset {
+        top: -15px;
+      }
+    }
+
+    @media only screen and (max-width: 600px) {
+      .slider-container{
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      .author {
+        font-size: 0.7rem
+      }
+
+      .equal-contribution {
+        font-size: 0.65rem
+      }
+
+      .author-vistec {
+        font-size: 0.8rem;
+      }
+
+      .conference-name{
+        font-size:  1rem;
+      }
+      .slider-container .card-footer-item{
+        font-size: 14px;
+      }
+    }
+
+    .shead {
+      font-size: 1.7rem;
+      margin-bottom: 0.5em !important;
+    }
+
+    .hero-body {
+      padding: 1rem 1rem 2rem 1rem;
+    }
+
+    .bbut {
+      background-color: #739cde;
+      color: white;
+      padding: 0.5em 0.8em;
+      border-radius: 5px;
+    }
+
+    .dtitle {
+      font-size: 1.1rem;
+    }
+
+    .bbut:hover {
+      color: white !important;
+    }
+
+    .videoren .column {
+      margin: 0px;
+    }
+    .button-clipboard-tooltip{
+        display: none;
+        color:white;
+        background: rgba(74,74,74,0.9);
+        border-radius: 2px;
+        padding: 0.5rem 1rem;
+        margin-right: 1rem;
+        text-overflow: ellipsis;
+        white-space: pre;
+    }
+
+    /* loading animation */
+    .video_loader {
+        /* border: 16px solid #f3f3f3; */
+        border: 16px solid #9d9c9c;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        animation: video_loader_spin 4s linear infinite;
+    }
+
+    @keyframes video_loader_spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .table-primary{--bs-table-color:#000;--bs-table-bg:#cfe2ff;--bs-table-border-color:#bacbe6;--bs-table-striped-bg:#c5d7f2;--bs-table-striped-color:#000;--bs-table-active-bg:#bacbe6;--bs-table-active-color:#000;--bs-table-hover-bg:#bfd1ec;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+    .table-secondary{--bs-table-color:#000;--bs-table-bg:#e2e3e5;--bs-table-border-color:#cbccce;--bs-table-striped-bg:#d7d8da;--bs-table-striped-color:#000;--bs-table-active-bg:#cbccce;--bs-table-active-color:#000;--bs-table-hover-bg:#d1d2d4;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+    .table-success{--bs-table-color:#000;--bs-table-bg:#d1e7dd;--bs-table-border-color:#bcd0c7;--bs-table-striped-bg:#c7dbd2;--bs-table-striped-color:#000;--bs-table-active-bg:#bcd0c7;--bs-table-active-color:#000;--bs-table-hover-bg:#c1d6cc;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+    .table-info{--bs-table-color:#000;--bs-table-bg:#cff4fc;--bs-table-border-color:#badce3;--bs-table-striped-bg:#c5e8ef;--bs-table-striped-color:#000;--bs-table-active-bg:#badce3;--bs-table-active-color:#000;--bs-table-hover-bg:#bfe2e9;--bs-table-hover-color:#000;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}
+    .my-2{margin-top:.5rem!important;margin-bottom:.5rem!important}
+    .my-3{margin-top:1rem!important;margin-bottom:1rem!important}
+    .col-12{flex:0 0 auto;width:100%}
+    .col-md-6{flex:0 0 auto;width:50%}
+    .w-100{width:100%!important}
+    .m-auto{margin:auto!important}
+    .text-center{text-align:center!important}
+    .row{--bs-gutter-x:1.5rem;--bs-gutter-y:0;display:flex;flex-wrap:wrap;margin-top:calc(-1 * var(--bs-gutter-y));margin-right:calc(-.5 * var(--bs-gutter-x));margin-left:calc(-.5 * var(--bs-gutter-x))}
+    .w-100{width:100%!important}
+    .m-auto{margin:auto!important}
+    .text-center{text-align:center!important}
+    .table{--bs-table-color:var(--bs-body-color);--bs-table-bg:transparent;--bs-table-border-color:var(--bs-border-color);--bs-table-accent-bg:transparent;--bs-table-striped-color:var(--bs-body-color);--bs-table-striped-bg:rgba(0, 0, 0, 0.05);--bs-table-active-color:var(--bs-body-color);--bs-table-active-bg:rgba(0, 0, 0, 0.1);--bs-table-hover-color:var(--bs-body-color);--bs-table-hover-bg:rgba(0, 0, 0, 0.075);width:100%;margin-bottom:1rem;color:var(--bs-table-color);vertical-align:top;border-color:var(--bs-table-border-color)}
+    .table>:not(caption)>*>*{padding:.5rem .5rem;background-color:var(--bs-table-bg);border-bottom-width:1px;box-shadow:inset 0 0 0 9999px var(--bs-table-accent-bg)}
+
+
+  </style>
+
+  <script src="scripts/splide.min.js"></script>
 </head>
-<body>
 
-  <main class="container" style="max-width: 1000px;">
-    <!-- <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
-      <div class="col-md-12 p-lg-5 mx-auto my-1">
-        <h2 class="display-3 fw-bold my-5 fs-1">ActRay: Online Active Ray Sampling for Radiance Fields</h2>
-
-        <div class="row my-3">
-          <div class="col">
-            <p class="fw-normal mb-3 fs-4">Jiangkai Wu</p>
-            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+<body style="background-color: #F5F5F5; overflow-x: hidden;">
+  <section class="hero" style="background-color: white;">
+    <div class="hero-body" style="padding: 3rem 0 2rem 0;">
+      <div class="container" style="text-align: center; max-width: 950px;">
+        <h1 class="title">
+            ActRay: Online Active Ray Sampling for Radiance Fields
+        </h1>
+        <div class="columns author is-mobile is-gapless">
+          <div class="column">
+            Jiangkai Wu
           </div>
-          <div class="col">
-            <p class="fw-normal mb-3 fs-4">Liming Liu</p>
-            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
-          </div><div class="col">
-            <p class="fw-normal mb-3 fs-4">Yunpeng Tan</p>
-            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
+          <div class="column">
+            Liming Liu
+          </div>
+          <div class="column">
+            Yunpeng Tan
+          </div>
+          <div class="column">
+            Quanlu Jia
+          </div>
+          <div class="column">
+            Haodan Zhang
+          </div>
+          <div class="column">
+              <a class="text-decoration-none" href="https://www.wict.pku.edu.cn/xinggong/en/">
+              Xinggong Zhang<sup>*</sup></a>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <p class="fw-normal mb-3 fs-4">Quanlu Jia</p>
-            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
-          </div>
-          <div class="col">
-            <p class="fw-normal mb-3 fs-4">Haodan Zhang</p>
-            <p class="fw-normal text-muted mb-3 fs-5">Peking University</p>
-          </div><div class="col">
-            <p class="fw-normal mb-3 fs-4">Xinggong Zhang*</p>
-            <p class="fw-normal text-muted mb-1 fs-5">Peking University</p>
-            <p class="fw-normal text-muted mb-1 fs-6">zhangxg(AT)pku.edu.cn</p>
-          </div>
+
+          <!-- <div class="columns author is-mobile" style="margin-top: -25px;" > -->
+          <!-- <div class="column"></div> -->
+          <!-- <div class="column"> -->
+          <!--     <a class="text-decoration-none" href="https://www.wict.pku.edu.cn/xinggong/en/">
+              Xinggong Zhang<sup>*</sup></a> -->
+          <!-- </div> -->
+          <!-- <div class="column"></div> -->
+        <!-- </div> -->
+        
+        <div class="author-vistec">
+          Wangxuan Institute of Computer Technology, &nbsp;&nbsp; 
+        </div>
+
+        <div class="author-vistec">
+          Peking University &nbsp;&nbsp; 
+        </div>
+
+        <div>
+          <h2 class="title conference-name" style="margin-top: 15px;" >SIGGRAPH Asia'23</h2>
+        </div>
+        <div class="equal-contribution" style="color:#909090">
+          <sup>*</sup> corresponding author [zhangxg(AT)pku.edu.cn]
         </div>
       </div>
-      <h6 class="mt-0 text-secondary">* indicates corresponding author</h5>
-      <h3 class="mt-3">SIGGRAPH Asia'23</h3>
-    </div> -->
+    </div>
+  </section>
+  <section class="section" style="display : flex; align-items : center;justify-content: center;padding: 10px;">
+    <div style="max-width:  900px;width: 900px;">
+      <div style="position: relative;width: 100%;height: 0;padding-bottom: 56.25%; ">
+        <!-- <iframe height="506.25" width="900"
+          style=" position: absolute;top: 0;left: 0;width: 100%;height: 100%;max-height: 100%; max-width: 100%;"
+          src="https://www.youtube.com/embed/HyfkF7Z-ddA" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe> -->
+          <div style="position: relative; max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;">
+            <div style="margin: auto; width: 100%; height: 30px; text-align: center;">
+              <!-- <div class="video_loader"></div> -->
+              <h2>Video loading. Switching to Bilibili in <span id="retry_in_second">4</span> second(s)</h2>
+            </div>
+          </div>
+          
+          <iframe id="primary_video_source" height="506.25" width="900"
+          style=" position: absolute; top: 0;left: 0;width: 100%;height: 100%;max-height: 100%; max-width: 100%; display: hidden;"
+          src="https://www.youtube-nocookie.com/embed/ZSzhD68T59I?si=tYepI5iaR1zoMhM4" 
+          title="YouTube video player" frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen></iframe>
 
+          <iframe id="backup_video_source" height="506.25" width="900" 
+          style=" position: absolute; top: 0;left: 0;width: 100%;height: 100%;max-height: 100%; max-width: 100%; display: none;"
+          src="//player.bilibili.com/player.html?bvid=BV1fN4y1q7Kg&page=1" 
+          scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+      </div>
+    </div>
+  </section>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container" style="max-width:900px;">
+        <img src="imgs/representative_image.jpg" style="width: 100%;"/>
+      </div>
+    </div>
+  </section>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container" style="max-width:900px;">
+        <h1 class="title shead">Abstract</h1>
+        <p class="abstract" style="text-align: justify;">
+        Thanks to the high-quality reconstruction and photorealistic rendering, NeRF (Neural Radiance Fields) has attracted extensive attention and achieved continuous improvement. Despite its impressive visual effect, the prohibitive reconstruction time limits its practical application in real life. 
+        Although significant acceleration has been achieved, there is still a considerable gap from real-time reconstruction, due to the need for tens of thousands of iterations. 
+        In this paper, a feasible solution thus is to reduce the number of required iterations by always training the underfitting rays samples. To this end, we propose an online active ray sampling strategy, ActRay. 
+        Since the states of rays are partially observable and outdated, a rendering-gradient-based loss propagation algorithm is presented to fully estimate the ray states. To balance exploration and exploitation, a UCB-based online reinforcement learning algorithm is proposed to adaptively select the most valuable and potential rays. 
+        We evaluate ActRay on both real-world and synthetic scenes, and the promising results show that it accelerates radiance fields training to 651% of the original speed. Besides, we test ActRay under all kinds of NeRF representations (implicit, explicit, and hybrid), demonstrating that it is general and effective to different representations. 
+        We believe this work will contribute to the practical application of radiance fields, because it has taken a step closer to real-time radiance fields reconstruction.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section class="hero">
+    <div class="sec-body">
+      <div class="container is-size-5" style="text-align: center;">
+        <div class="columns">
+          <div class="column"></div>
+          <div class="column">
+            <a href="https://dl.acm.org/doi/10.1145/3610548.3618254" target="_blank">
+              <div>
+                <!-- <img src="imgs/paper.jpg"> -->
+                <div style="width:140px; height:140px; overflow: hidden; margin: auto;">
+                  <!-- <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Paper</span> -->
+                  <img src="imgs/paper.jpg">
+              </div>
+              </div>
+              Paper
+            </a>
+          </div>
+          <div class="column">
+            <a href="https://github.com/pku-netvideo/actray" target="_blank">
+              <div>
+                <!-- <img src="assets/images/coding.png"> -->
+                <div style="width:140px; height:140px; overflow: hidden; margin: auto; border-radius: 50vh;">
+                  <!-- <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Code</span> -->
+                  <img src="imgs/code.jpg">
+              </div>
+              </div>          
+            Code
+            </a>
+          </div>
+          <div class="column"></div>
+        </div>
+      </div>
+    </div>
+    <br />
+  </section>  
+  
+  <section class="hero">
+    <div class="hero-body">
+      <div class="col-max-width container videoren">
+        <h1 class="title shead">
+          Result Videos
+        </h1>
+        <div class="row my-2">
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024019784430.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">lego</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024037307674.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">ship</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024003840341.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">hotdog</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614024028381546.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">material</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023951327228.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">ficus</h4>
+        </div>
+        <div class="my-2 col-12 col-md-6">
+          <video controls playsinline autoplay muted loop style="flex: 1;" class="w-100">
+            <source src="https://www.icst.pku.edu.cn/netvideo/docs/2023-06/20230614023938179159.mp4" type="video/mp4" />
+          </video>
+          <h4 class="w-100 m-auto text-center">chairs</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="col-max-width container videoren">
+        <h1 class="title shead">
+          Quality on the real world scenes
+        </h1>
+        <div class="columns">
+          <div class="column">
+            <img class="w-100 my-3" src="imgs/realworld_result.jpg" />
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="col-max-width container videoren">
+        <h1 class="title shead">
+          Training Time
+        </h1>
+        <div class="my-3">
+        <p class="w-100 m-auto text-center">Table 1. The performance of Actray on <span class="font-weight-bold">Plenoxels</span></p>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
+            <td>28</td>
+            <td>30</td>
+            <td>31</td>
+            <td>32</td>
+            <td>33.5</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Baseline (Iters)</td>
+            <td>850</td>
+            <td>2400</td>
+            <td>4600</td>
+            <td>9700</td>
+            <td>15200</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Ours (Iters)</td>
+            <td>300</td>
+            <td>450</td>
+            <td>700</td>
+            <td>1700</td>
+            <td>3600</td>
+          </tr>
+          <tr class="table-info">
+            <td>Acceleration</td>
+            <td>283 %</td>
+            <td>533 %</td>
+            <td class="table-success"><span class="font-weight-bold">651 %</span></td>
+            <td>571 %</td>
+            <td>422 %</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="my-3">
+        <p class="w-100 m-auto text-center">Table 2. The performance of Actray on <span class="font-weight-bold">Instant-NGP</span></p>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
+            <td>31</td>
+            <td>32</td>
+            <td>33</td>
+            <td>34</td>
+            <td>34.2</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Baseline (Iters)</td>
+            <td>1136</td>
+            <td>1888</td>
+            <td>3802</td>
+            <td>12368</td>
+            <td>18000</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Ours (Iters)</td>
+            <td>1024</td>
+            <td>1388</td>
+            <td>2307</td>
+            <td>6300</td>
+            <td>8609</td>
+          </tr>
+          <tr class="table-info">
+            <td>Acceleration</td>
+            <td>111 %</td>
+            <td>135 %</td>
+            <td>167 %</td>
+            <td>196 %</td>
+            <td class="table-success"><span class="font-weight-bold"></span>209 %</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="my-3">
+        <p class="w-100 m-auto text-center">Table 3. The performance of Actray on <span class="font-weight-bold">NeRF</span></p>
+        <table class="table">
+          <tr class="table-primary">
+            <td>Quality (PSNR)</td>
+            <td>26</td>
+            <td>27</td>
+            <td>28</td>
+            <td>29</td>
+            <td>30</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Baseline (Iters)</td>
+            <td>9552</td>
+            <td>17641</td>
+            <td>34861</td>
+            <td>76757</td>
+            <td>223974</td>
+          </tr>
+          <tr class="table-secondary">
+            <td>Ours (Iters)</td>
+            <td>4620</td>
+            <td>5910</td>
+            <td>11250</td>
+            <td>22310</td>
+            <td>69400</td>
+          </tr>
+          <tr class="table-info">
+            <td>Acceleration</td>
+            <td>207 %</td>
+            <td>298 %</td>
+            <td>310 %</td>
+            <td class="table-success"><span class="font-weight-bold">344 %</span></td>
+            <td>323 %</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+    
+
+  <section class="hero" style="padding-top:0px;">
+    <div class="hero-body">
+      <div class="container" style="max-width:900px;">
+<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      BibTex
+    </p>
+    <a class="card-header-icon button-clipboard" style="border:0px; background: inherit;" data-clipboard-target="#bibtex-info" >
+      <div class="button-clipboard-tooltip">Copied!</div>
+      <span class="icon">
+        <img src="imgs/copy.svg" style="height: 20px;"/>
+      </span>
+    </a>
+  </header>
+  <div class="card-content">
+<pre style="background-color:inherit;padding: 0px;" id="bibtex-info">@inproceedings{10.1145/3610548.3618254,
+  author = {Wu, Jiangkai and Liu, Liming and Tan, Yunpeng and Jia, Quanlu and Zhang, Haodan and Zhang, Xinggong},
+  title = {ActRay: Online Active Ray Sampling for Radiance Fields},
+  year = {2023},
+  booktitle = {SIGGRAPH Asia 2023 Conference Papers},
+  articleno = {97}, 
+  numpages = {10},
+  location = {Sydney, NSW, Australia},
+  series = {SA '23}
+}</pre>
+</pre>
+  </div>
+</div>
+  </section>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container" style="max-width:900px;">
+        <div class=" col-max-width container">
+          <h1 class="title shead">
+            More projects from <a class="text-decoration-none" href="https://pku-netvideo.github.io/">our lab</a>
+          </h1>
+
+          <a href="https://pku-netvideo.github.io/zgaming/" target="_blank">
+            <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    ZGaming: Zero-Latency Cloud Gaming by Image Prediction
+                  </p>
+                  <p class="card-header-icon" aria-label="more options">
+                    SIGCOMM'23
+                  </p>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    <img src="https://pku-netvideo.github.io/zgaming/imgs/main_pic.jpg" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+      </div>
+     </div>
+    </div>
+  </section>
+
+  <script src="scripts/clipboard.min.js"></script>
+  <script>
+    var clipboard = new ClipboardJS('.button-clipboard');
+    function setTooltip(){
+      var tooltip = document.querySelector('.button-clipboard-tooltip');
+      tooltip.style.display = 'block';
+    }
+    function hideTooltip(){
+      var tooltip = document.querySelector('.button-clipboard-tooltip');
+      tooltip.style.display = 'none';
+    }
+    clipboard.on('success', function(e) {
+      setTooltip(e.trigger, 'Copied!');
+      setTimeout(function(){
+        hideTooltip(e.trigger);
+      }, 3900);
+      
+    });
+    
+  </script>
+
+  <script>
+    var primary_video_source = document.getElementById('primary_video_source');
+    var primary_video_source_hasLoaded = false;
+
+    primary_video_source.onload = function() {
+      primary_video_source_hasLoaded = true;
+      primary_video_source.style.display = 'block';
+    }
+
+    function auto_switch_video_source() {
+      var retry_in_second = document.getElementById('retry_in_second');
+      if (retry_in_second.innerText > 0) {
+        retry_in_second.innerText = retry_in_second.innerText - 1;
+        setTimeout(auto_switch_video_source, 1000);
+      } else if (!primary_video_source_hasLoaded) {
+        primary_video_source.style.display = 'none';
+        document.getElementById('backup_video_source').style.display = 'block';
+      }
+    }
+
+    setTimeout(auto_switch_video_source, 1000);
+
+    // setTimeout(function() {
+    //     if (!primary_video_source_hasLoaded) {
+    //       primary_video_source.style.display = 'none';
+    //       document.getElementById('backup_video_source').style.display = 'block';
+    //     }
+    // }, 2000);
+
+  </script>
+</body>
+
+  <!-- <link href="css/bulma.min.css" rel="stylesheet"> -->
+  <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- <link href="css/custom.css" rel="stylesheet"> -->
+<!-- </head>
+<body> -->
+
+  <!-- <main class="container" style="max-width: 1000px;">
     <div class="jumbotron text-center mt-5">
       <div class="container">
         <div class="row">
           <div class="col">
             <h2 style="font-size:30px;">ActRay: Online Active Ray Sampling for Radiance Fields</h2>
             <h4 style="color:#6e6e6e;">SIGGRAPH Asia'23</h4>
-            <!-- <h5 style="color:#6e6e6e;"> (Oral Presentation and Best Paper Candidate)</h5> -->
             <hr>
             <h6> 
-              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240829.htm" target="_blank">Jiangkai Wu</a><!--<sup>1</sup>-->, 
-              <a href="https://www.icst.pku.edu.cn/NetVideo/people/bs/240822.htm" target="_blank">Liming Liu</a><!--<sup>1</sup>-->, 
-              <a href="https://www.icst.pku.edu.cn/NetVideo/people/sxs/240836.htm" target="_blank">Yunpeng Tan</a><!--<sup>1</sup>-->,
-              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240830.htm" target="_blank">Quanlu Jia</a><!--<sup>1</sup>-->,
-              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240828.htm" target="_blank">Haodan Zhang</a><!--<sup>1</sup>-->,
+              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240829.htm" target="_blank">Jiangkai Wu</a>, 
+              <a href="https://www.icst.pku.edu.cn/NetVideo/people/bs/240822.htm" target="_blank">Liming Liu</a>, 
+              <a href="https://www.icst.pku.edu.cn/NetVideo/people/sxs/240836.htm" target="_blank">Yunpeng Tan</a>,
+              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240830.htm" target="_blank">Quanlu Jia</a>,
+              <a href="https://www.icst.pku.edu.cn/NetVideo/people/ss/240828.htm" target="_blank">Haodan Zhang</a>,
               <a href="https://www.icst.pku.edu.cn/xinggong/" target="_blank">Xinggong Zhang</a><sup>*</sup>
             </h6>
             <p class="text-secondary"> 
-              <!--<sup>1</sup>-->Peking University &nbsp;&nbsp; 
+              Peking University &nbsp;&nbsp; 
               <br>
               <sup>*</sup> corresponding author [zhangxg(AT)pku.edu.cn]
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="row align-items-center mb-5">
+   <!--  <div class="row align-items-center mb-5">
       <div class="video-container">
         <iframe height="auto" src="https://www.youtube-nocookie.com/embed/ZSzhD68T59I?si=tYepI5iaR1zoMhM4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
@@ -92,9 +663,9 @@
 
     <div class="row">
       <img class="w-100" src="imgs/representative_image.jpg" />
-    </div>
+    </div> -->
 
-    <div class="row my-5">
+    <!-- <div class="row my-5">
       <h2>Abstract</h2>
       <p style="text-align: justify;">
         Thanks to the high-quality reconstruction and photorealistic rendering, NeRF (Neural Radiance Fields) has attracted extensive attention and achieved continuous improvement. Despite its impressive visual effect, the prohibitive reconstruction time limits its practical application in real life. 
@@ -104,31 +675,26 @@
         We evaluate ActRay on both real-world and synthetic scenes, and the promising results show that it accelerates radiance fields training to 651% of the original speed. Besides, we test ActRay under all kinds of NeRF representations (implicit, explicit, and hybrid), demonstrating that it is general and effective to different representations. 
         We believe this work will contribute to the practical application of radiance fields, because it has taken a step closer to real-time radiance fields reconstruction.
       </p>
-    </div>
+    </div> -->
 
-    <div class="row my-5">
+    <!-- <div class="row my-5">
       <div class="col">
-        <!-- <div class="rounded-circle bg-secondary m-auto my-3" style="width:140px; height:140px; overflow: hidden;"> -->
         <div class="bg-secondary m-auto my-3" style="width:140px; height:140px; overflow: hidden;">
-            <!-- <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Paper</span> -->
             <img src="imgs/paper.jpg">
         </div>
         <div class="d-flex justify-content-center">
-          <!-- <a class="btn btn-primary" href="https://dl.acm.org/doi/10.1145/3610548.3618254" role="button">Available &raquo;</a> -->
           <a class="btn btn-primary" href="https://dl.acm.org/doi/10.1145/3610548.3618254" role="button">paper &raquo;</a>
         </div>
-      </div><!-- /.col-lg-4 -->
+      </div>
       
       <div class="col">
         <div class="rounded-circle bg-secondary m-auto my-3" style="width:140px; height:140px; overflow: hidden;">
-            <!-- <span id="pic-info-$i-1" class="text-light m-auto d-block" style="font-size: 40px; text-align: center; line-height: 140px;">Code</span> -->
             <img src="imgs/code.jpg">
         </div>
         <div class="d-flex justify-content-center">
-          <!-- <a class="btn btn-primary" href="https://github.com/pku-netvideo/actray" role="button">Available &raquo;</a> -->
           <a class="btn btn-primary" href="https://github.com/pku-netvideo/actray" role="button">code &raquo;</a>
         </div>
-      </div><!-- /.col-lg-4 -->
+      </div>
     </div>
 
     <div class="my-5">
@@ -171,9 +737,9 @@
           <h4 class="w-100 m-auto text-center">chairs</h4>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="my-5">
+   <!--  <div class="my-5">
       <h2>Quality on the real world scenes</h2>
       <img class="w-100 my-3" src="imgs/realworld_result.jpg" />
     </div>
@@ -295,42 +861,9 @@
         </table>
       </div>
 
-    </div>
-
-    <!-- <div class="my-5">
-      <h2>BibTex</h2>
-      <p>
-        @inproceedings{10.1145/3610548.3618254, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;author = {Wu, Jiangkai and Liu, Liming and Tan, Yunpeng and Jia, Quanlu and Zhang, Haodan and Zhang, Xinggong}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;title = {ActRay: Online Active Ray Sampling for Radiance Fields}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;year = {2023}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;isbn = {9798400703157}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;publisher = {Association for Computing Machinery}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;address = {New York, NY, USA}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;url = {https://doi.org/10.1145/3610548.3618254}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;doi = {10.1145/3610548.3618254}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;booktitle = {SIGGRAPH Asia 2023 Conference Papers}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;articleno = {97}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;numpages = {10}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;keywords = {novel view synthesis, active learning, neural radiance fields, 3D reconstruction, neural rendering, multi-view}, <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;series = {SA '23} <br/>
-        }
-
-        @inproceedings{10.1145/3610548.3618254, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;author = {Wu, Jiangkai and Liu, Liming and Tan, Yunpeng and Jia, Quanlu and Zhang, Haodan and Zhang, Xinggong}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;title = {ActRay: Online Active Ray Sampling for Radiance Fields}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;year = {2023}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;booktitle = {SIGGRAPH Asia 2023 Conference Papers}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;articleno = {97}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;numpages = {10}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;location = {Sydney, NSW, Australia}, <br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;series = {SA '23} <br/>
-        }
-
-      </p>
     </div> -->
 
-    <div class="my-5 w-100">
+<!--     <div class="my-5 w-100">
       <section class="hero pt-0 m-0 w-100">
         <div class="hero-body p-0">
           <div class="container p-0">
@@ -339,7 +872,6 @@
                 <p class="card-header-title mb-0">
                   BibTex
                 </p>
-                <!-- <a class="card-header-icon button-clipboard" style="border:0px; background: inherit;" data-clipboard-target="#bibtex-info" > -->
                 <a class="card-header-icon button-clipboard text-decoration-none p-0" style="border:0px;" data-clipboard-target="#bibtex-info" >
                   <div class="button-clipboard-tooltip m-0">Copied!</div>
                   <span class="icon">
@@ -364,9 +896,9 @@
           </div>
         </div>
       </section>
-    </div>
+    </div> -->
 
-    <div class="my-5">
+    <!-- <div class="my-5">
       <h2 style="text-align: left;">More projects from <a class="text-decoration-none" href="https://pku-netvideo.github.io/">our lab</a></h2>
       <a class="text-decoration-none" href="https://pku-netvideo.github.io/zgaming/" target="_blank">
         <div class="card">
@@ -376,19 +908,18 @@
               </p>
             </header>
             <div class="card-content">
-              <!-- <img src="https://pku-netvideo.github.io/zgaming/imgs/main_pic.jpg" style="max-height: 150px;"> -->
               <img src="https://pku-netvideo.github.io/zgaming/imgs/main_pic.jpg">
             </div>
           </div>
         </div>
       </a>
-    </div>
+    </div> -->
 
-  </main>
+  <!-- </main> -->
 
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="js/clipboard.min.js"></script>
-  <script>
+<!--   <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/clipboard.min.js"></script> -->
+  <!-- <script>
     var clipboard = new ClipboardJS('.button-clipboard');
     function setTooltip(){
       var tooltip = document.querySelector('.button-clipboard-tooltip');
@@ -405,5 +936,5 @@
       }, 1000);
     });
   </script>
-</body>
+</body> -->
 </html>
